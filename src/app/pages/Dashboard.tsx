@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { CheckCircle, Clock, AlertTriangle, TrendingUp } from 'lucide-react';
+import { CheckCircle, Clock, AlertTriangle, TrendingUp, Loader2, ChevronRight, Home } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
 import { api } from '../services/api';
 
@@ -127,15 +127,46 @@ export function Dashboard() {
   }
 
   return (
-    <div className={`p-8 ${isLoading ? 'opacity-50' : ''}`}>
+    <div className="p-8">
       <div className="max-w-[1100px] mx-auto">
+        {/* Breadcrumbs Navigation */}
+        <nav className="flex items-center text-sm text-gray-500 mb-6">
+          <ol className="flex items-center space-x-2">
+            <li>
+              <div className="flex items-center gap-1">
+                <Home className="w-4 h-4" />
+                <span>Proyectos</span>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRight className="w-4 h-4 mx-1" />
+                <span>{activeProject.nombre}</span>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRight className="w-4 h-4 mx-1" />
+                <span className="font-semibold text-gray-900">Dashboard</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Dashboard - {activeProject.nombre}</h1>
           <p className="text-gray-700 mt-1">Resumen general de las pruebas de usabilidad</p>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-gray-100">
+            <Loader2 className="w-10 h-10 animate-spin text-blue-600 mb-4" />
+            <p className="text-gray-500 font-medium">Cargando métricas y gráficos...</p>
+          </div>
+        ) : (
+          <>
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <MetricCard
             title="Tareas exitosas"
             value={metrics.exitoPercent}
@@ -284,6 +315,8 @@ export function Dashboard() {
             </div>
           </Card>
         </div>
+        </>
+        )}
       </div>
     </div>
   );
